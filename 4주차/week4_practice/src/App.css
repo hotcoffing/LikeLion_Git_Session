@@ -1,0 +1,39 @@
+/* 화면 중앙 정렬을 위한 기본 컨테이너 설정 */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* 화면 전체 높이 */
+  background-color: #f5f6fa;
+}
+
+/* 여기에 버튼 스타일을 하나씩 추가해 나갈 예정입니다! */
+.button {
+  font-size: 30px;
+
+  background-color: purple;
+  color: orange;
+  border: none;
+  border-radius: 20px;
+  /* 그림자 가로 시작 위치, 그림자 세로 시작 위치, 흐림 정도, 그림자 크기 정도, 색상 */
+  /* x시작 위치 왼쪽 // y시작 위치 위쪽 */
+  box-shadow: 5px 5px 2px 2px aqua;
+
+  padding: 30px 60px 30px 60px;
+  margin: 0px;
+}
+
+.button:hover {
+  background-color: bisque;
+  /* transition 속성은 바뀌는데 변하는 총 시간 default : 0s*/
+  transition: 0.7s;
+}
+
+/* tab등으로 포커스 지정 가능 */
+.button:focus {
+  box-shadow: 0 0 0 4px black;
+}
+
+.button:active {
+  background-color: white;
+}
