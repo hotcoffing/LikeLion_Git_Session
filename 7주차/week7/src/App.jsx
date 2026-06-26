@@ -1,122 +1,109 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useState, useEffect } from "react";
+import "./App.scss";
+import getCandidates from "./apis/getCandidates";
+import postCandidates from "./apis/postCandidates";
+import deleteCandidates from "./apis/deleteCandidates";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const PROMISE_ID = import.meta.env.VITE_PROMISE_ID;
+  const [candidates, setCandidates] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+
+  const handleMapClick = (_map, mouseEvent) => {
+    const latlng = mouseEvent.latLng;
+    const geocoder = new window.kakao.maps.services.Geocoder();
+
+    // 클릭한 위치의 좌표를 주소로 변환하여 selectedPlace 상태에 저장
+    geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (result, status) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const address =
+          (result[0].road_address?.address_name || result[0].address.address_name);
+        // selectedPlace에 주소, 좌표 정보 저장
+        setSelectedPlace({ lat: latlng.getLat(), lng: latlng.getLng(), address });
+      }
+    });
+  };
+
+  const handleRegister = async () => {
+    // selectedPlace에 담긴 정보(주소, 좌표)를 API로 전달하여 후보지 등록
+    const data = await postCandidates(PROMISE_ID, { 
+      // 현재 selectedPlace에 (현재 상태 : {address, lat, lng} 포함)
+      ...selectedPlace, 
+      // API 명세에 맞게 name 필드 추가 (현재는 임시로 name 프로퍼티에 주소를 사용)
+      name: selectedPlace.address, 
+    });
+
+    // 등록이 완료된 후보지를 후보지 목록에 추가
+    setCandidates((prev) => [
+      ...prev, 
+      // API 응답에서 서버가 제공하는 id를 selectedPlace에 추가해 후보지 목록에 저장 
+      {...selectedPlace, id: data.id}
+    ]);
+    // 등록 후 선택된 장소 초기화
+    setSelectedPlace(null);
+  };
+
+  const handleDelete = async (id) => {
+    (await 
+      // 후보지 삭제 API 호출
+      deleteCandidates(PROMISE_ID, id),
+      // 삭제가 완료된 후보지를 후보지 목록에서 제거
+      setCandidates((prev) => prev.filter((c) => c.id !== id)));
+  };
+
+  // 약속 후보지 목록을 최초 1회 불러오는 API 호출
+  useEffect(() => {
+    getCandidates(PROMISE_ID).then((data) => setCandidates(data));
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app">
+      <Map
+        center={{ lat: 37.5826, lng: 127.0109 }}
+        level={3}
+        className="map-wrapper"
+        onClick={handleMapClick}
+      > 
+        {/* 후보지 MapMarker를 map 함수로 뿌리기 */}
+        {candidates.map((c) => (
+          <MapMarker
+            key={c.id}
+            position={{ lat: c.lat, lng: c.lng }}
+          />
+        ))}
+      </Map>
 
-      <div className="ticks"></div>
+      {
+        /* 선택된 장소(selectedPlace)가 있을 경우 */
+        selectedPlace && (
+          <div className="place-card">
+            {/* 선택된 장소의 주소를 보여주고 */}
+            <p className="place-card__address">
+              {selectedPlace.address}
+            </p>
+            {/* 후보지 등록 버튼을 누르면 handleRegister 함수가 실행되어 
+            함수 내에서 API로 후보지 등록 후 함수 내에서 selectedPlace 상태를 초기화 */}
+            <button className="place-card__btn" onClick={handleRegister}>
+              후보지 등록
+            </button>
+          </div>
+        )
+      }
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <div className="candidate-list">
+        <h3 className="candidate-list__title">📍 후보지 목록</h3>
+        {candidates.map((c) => (
+          <div className="candidate-item" key={c.id}>
+            <span className="candidate-item__address">
+              {c.address}
+            </span>
+            <button className="candidate-item__delete" onClick={() => handleDelete(c.id)}>
+              취소
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-
-export default App

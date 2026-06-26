@@ -1,0 +1,4 @@
+project make : npm create vite@latest [project-name]
+project start : npm install
+scss : npm install -D sass-embedded
+kakao api : npm install react-kakao-maps-sdk
