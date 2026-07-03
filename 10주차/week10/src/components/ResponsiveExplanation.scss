@@ -1,0 +1,19 @@
+@use '../styles/variables' as *;
+
+.responsive-explanation {
+  padding: $spacing-md;
+
+  &__open-btn {
+    background: $color-primary;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}

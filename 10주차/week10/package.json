@@ -1,5 +1,5 @@
 {
-  "name": "week9",
+  "name": "week10",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,20 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.101.1",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "zustand": "^5.0.14"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@rolldown/plugin-babel": "^0.2.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@vitejs/plugin-react": "^6.0.3",
     "babel-plugin-react-compiler": "^1.0.0",
-    "oxlint": "^1.69.0",
-    "sass-embedded": "^1.100.0",
-    "vite": "^8.1.0"
+    "oxlint": "^1.71.0",
+    "vite": "^8.1.1"
   }
 }

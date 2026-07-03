@@ -174,3 +174,30 @@
   padding: 10px;
   font-weight: 600;
 }
+
+.cart-panel__category-totals {
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $color-border;
+
+  h3 {
+    font-size: 13px;
+    margin: 0 0 8px;
+    color: $color-text-muted;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+}

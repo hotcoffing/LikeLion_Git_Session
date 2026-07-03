@@ -1,0 +1,55 @@
+.mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+
+.mobile-drawer {
+  width: 100%;
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 12px 20px 24px;
+  animation: drawer-up 0.25s ease-out;
+
+  &__handle {
+    width: 40px;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+    margin: 0 auto 12px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ccc;
+  }
+}
+
+@keyframes drawer-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

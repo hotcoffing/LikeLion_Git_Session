@@ -1,0 +1,15 @@
+// 표준 분기점 (PPT 참고: sm/md/lg/xl)
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+$color-primary: #f2542d;
+$spacing-md: 16px;
+
+// Tailwind의 md: 접두사가 하는 일을 SCSS 믹스인으로 직접 만들어보는 것
+@mixin desktop {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
